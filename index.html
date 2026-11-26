@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Program Penguatan Efikasi Diri Mahasiswa Kedokteran</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #0f172a; }
+    .tab-btn.active { background-color: #0284c7; color: #ffffff; border-color: #0284c7; }
+    .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 1rem; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04); }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-sky-900 via-sky-800 to-teal-800 text-white shadow-md">
+    <div class="max-w-6xl mx-auto px-4 py-6">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <span class="inline-block text-xs font-semibold uppercase tracking-wider bg-white/15 px-3 py-1 rounded-full mb-2">
+            Modul Pembelajaran &amp; Instrumen Evaluasi (10 Hari)
+          </span>
+          <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">
+            Program Penguatan Efikasi Diri Mahasiswa Kedokteran
+          </h1>
+          <p class="text-sky-100 text-sm mt-1">
+            Berdasarkan Panduan Program oleh <strong>dr. Sri Maria Puji Lestari, M.Pd.Ked</strong>
+          </p>
+        </div>
+        <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-3 text-xs space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            <span class="font-semibold">Sinkronisasi Rekap Otomatis Aktif</span>
+          </div>
+          <p class="text-sky-100">Peserta aktif: <span id="headerUserBadge" class="font-bold text-white">Belum diisi</span></p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="bg-white border-b border-slate-200 sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-4 py-2.5 flex gap-2 overflow-x-auto no-scrollbar" id="navTabs">
+      <button onclick="switchTab('profil')" data-tab="profil" class="tab-btn active whitespace-nowrap px-4 py-2 rounded-lg text-sm font-semibold border border-slate-200 transition">1. Profil &amp; Persetujuan</button>
+      <button onclick="switchTab('gses')" data-tab="gses" class="tab-btn whitespace-nowrap px-4 py-2 rounded-lg text-sm font-semibold border border-slate-200 transition">2. Skala GSES (Pre/Post)</button>
+      <button onclick="switchTab('tes')" data-tab="tes" class="tab-btn whitespace-nowrap px-4 py-2 rounded-lg text-sm font-semibold border border-slate-200 transition">3. Pre &amp; Post-Test (40 Soal)</button>
+      <button onclick="switchTab('materi')" data-tab="materi" class="tab-btn whitespace-nowrap px-4 py-2 rounded-lg text-sm font-semibold border border-slate-200 transition">4. 6 Sesi &amp; Lembar Kerja</button>
+      <button onclick="switchTab('simulasi')" data-tab="simulasi" class="tab-btn whitespace-nowrap px-4 py-2 rounded-lg text-sm font-semibold border border-slate-200 transition">5. Simulasi Klinis &amp; Berpikir Kritis</button>
+      <button onclick="switchTab('evaluasi')" data-tab="evaluasi" class="tab-btn whitespace-nowrap px-4 py-2 rounded-lg text-sm font-semibold border border-slate-200 transition">6. Evaluasi ASSURE &amp; Refleksi</button>
+      <button onclick="switchTab('rekap')" data-tab="rekap" class="tab-btn whitespace-nowrap px-4 py-2 rounded-lg text-sm font-semibold border border-slate-200 transition">7. Rekap &amp; Kirim Data</button>
+    </div>
+  </nav>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 hidden max-w-sm bg-slate-900 text-white text-sm px-4 py-3 rounded-xl shadow-lg border border-slate-700"></div>
+
+  <!-- Main Container -->
+  <main class="max-w-6xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
+
+    <!-- TAB 1: PROFIL & INFORMED CONSENT -->
+    <section id="tab-profil" class="tab-panel space-y-6">
+      <div class="card p-6">
+        <h2 class="text-xl font-bold text-slate-900 mb-1">Identitas Peserta &amp; Persetujuan Penelitian</h2>
+        <p class="text-sm text-slate-600 mb-5">
+          Gunakan <strong>NIM yang sama</strong> pada tahap Awal (Hari ke-1) dan Akhir (Hari ke-10) agar pencocokan skor GSES dan Pre/Post-Test berjalan akurat.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap / Inisial *</label>
+            <input type="text" id="inputNama" placeholder="Contoh: Aulia Rahma / AR" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm" />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">NIM (Nomor Induk Mahasiswa) *</label>
+            <input type="text" id="inputNim" placeholder="Contoh: 2318011045" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm" />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Angkatan / Semester *</label>
+            <input type="text" id="inputAngkatan" placeholder="Contoh: 2024 / Semester 4" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm" />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Tahap Pelaksanaan *</label>
+            <select id="inputTahap" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm bg-white">
+              <option value="Awal (Pre-Program / Hari 1)">Awal (Pre-Program / Hari 1)</option>
+              <option value="Proses (Hari 2 - Hari 9)">Proses (Hari 2 - Hari 9)</option>
+              <option value="Akhir (Post-Program / Hari 10)">Akhir (Post-Program / Hari 10)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mt-5 p-4 bg-sky-50 border border-sky-200 rounded-xl space-y-3">
+          <h3 class="font-bold text-sky-950 text-sm">Pernyataan Persetujuan (Informed Consent)</h3>
+          <p class="text-xs text-slate-700 leading-relaxed">
+            Keikutsertaan dalam kegiatan pembelajaran terpisah dari keikutsertaan dalam penelitian. Data skor GSES, hasil Pre/Post-Test, lembar kerja, dan evaluasi hanya dianalisis untuk kepentingan penelitian apabila Anda memberikan persetujuan di bawah ini.
+          </p>
+          <label class="flex items-start gap-2.5 cursor-pointer">
+            <input type="checkbox" id="inputConsent" class="mt-1 w-4 h-4 text-sky-600 rounded border-slate-300" />
+            <span class="text-sm font-medium text-slate-800">
+              Saya telah membaca penjelasan program dan <strong>SETUJU</strong> data pembelajaran saya digunakan secara anonim untuk evaluasi dan penelitian pendidikan kedokteran.
+            </span>
+          </label>
+        </div>
+
+        <div class="mt-5 flex flex-wrap gap-3">
+          <button onclick="saveProfile()" class="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-lg text-sm transition">
+            Simpan Identitas &amp; Lanjut
+          </button>
+        </div>
+      </div>
+
+      <!-- 8 Capaian Pembelajaran -->
+      <div class="card p-6">
+        <h3 class="text-lg font-bold text-slate-900 mb-3">8 Capaian Pembelajaran Program (CP)</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200"><strong>CP 1:</strong> Memahami konsep efikasi diri akademik &amp; klinis dalam pendidikan kedokteran.</div>
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200"><strong>CP 2:</strong> Mengidentifikasi 4 sumber utama efikasi diri (Bandura) pada pengalaman belajar.</div>
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200"><strong>CP 3:</strong> Menganalisis hambatan kognitif, afektif, dan regulasi diri saat menghadapi ujian/OSCE.</div>
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200"><strong>CP 4:</strong> Merancang pengalaman penguasaan bertahap (<em>mastery experiences</em>) berbasis target SMART.</div>
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200"><strong>CP 5:</strong> Menerapkan pembelajaran vikarius (<em>vicarious learning</em>) dari model sejawat &amp; klinisi.</div>
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200"><strong>CP 6:</strong> Mengelola persuasi verbal &amp; umpan balik konstruktif secara adaptif.</div>
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200"><strong>CP 7:</strong> Melakukan regulasi kondisi fisiologis dan emosional sebelum menghadapi situasi klinis.</div>
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200"><strong>CP 8:</strong> Mengevaluasi perkembangan efikasi diri dan merumuskan rencana tindak lanjut mandiri.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: GSES -->
+    <section id="tab-gses" class="tab-panel hidden space-y-6">
+      <div class="card p-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900">General Self-Efficacy Scale (GSES — 10 Butir)</h2>
+            <p class="text-sm text-slate-600">Pilih skala 1 (Sangat Tidak Setuju) hingga 4 (Sangat Setuju) sesuai kondisi Anda saat ini.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <label class="text-xs font-semibold text-slate-600">Mode Pengisian:</label>
+            <select id="gsesMode" class="px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold bg-white">
+              <option value="pre">GSES Awal (Pre-Test)</option>
+              <option value="post">GSES Akhir (Post-Test)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="gsesContainer" class="space-y-3"></div>
+
+        <div class="mt-6 p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="text-sm space-y-1">
+            <div>Skor GSES Pre: <strong id="displayGsesPre">-</strong> | Skor GSES Post: <strong id="displayGsesPost">-</strong> | Selisih (&Delta;): <strong id="displayGsesDelta" class="text-sky-700">-</strong></div>
+            <p class="text-xs text-slate-500">Rentang skor total GSES adalah 10 – 40.</p>
+          </div>
+          <button onclick="submitGses()" class="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-lg text-sm transition">
+            Hitung &amp; Kirim Skor GSES ke Google Sheet
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: PRE & POST TEST 40 SOAL -->
+    <section id="tab-tes" class="tab-panel hidden space-y-6">
+      <div class="card p-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900">Instrumen Pengetahuan &amp; Aplikasi Efikasi Diri (40 Soal)</h2>
+            <p class="text-sm text-slate-600">Pilih satu jawaban paling tepat (A–E) pada setiap butir soal.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <label class="text-xs font-semibold text-slate-600">Jenis Tes:</label>
+            <select id="testMode" class="px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold bg-white">
+              <option value="pre">Pre-Test (Awal Program)</option>
+              <option value="post">Post-Test (Akhir Program)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="quizContainer" class="space-y-4"></div>
+
+        <div class="mt-6 p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="text-sm space-y-1">
+            <div>Pre-Test: <strong id="displayPreScore">-</strong> | Post-Test: <strong id="displayPostScore">-</strong> | Selisih (&Delta;): <strong id="displayTestDelta" class="text-emerald-700">-</strong></div>
+            <p class="text-xs text-slate-500">Skor otomatis dihitung dalam skala 0 – 100 (jumlah benar &times; 2,5).</p>
+          </div>
+          <button onclick="submitQuiz()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg text-sm transition">
+            Selesai &amp; Kirim Hasil Tes ke Google Sheet
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: 6 SESI & LEMBAR KERJA -->
+    <section id="tab-materi" class="tab-panel hidden space-y-6">
+      <div class="card p-6">
+        <h2 class="text-xl font-bold text-slate-900 mb-1">6 Sesi Pembelajaran &amp; Lembar Kerja (LK 1 – LK 6)</h2>
+        <p class="text-sm text-slate-600 mb-5">Isi ringkasan lembar kerja tiap sesi. Data tersimpan di perangkat Anda dan ikut terkirim saat menekan tombol Kirim Rekap.</p>
+        <div id="sessionsContainer" class="space-y-4"></div>
+        <div class="mt-5">
+          <button onclick="saveWorksheets()" class="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-lg text-sm transition">
+            Simpan Lembar Kerja (LK 1–6)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: SIMULASI KLINIS & BERPIKIR KRITIS -->
+    <section id="tab-simulasi" class="tab-panel hidden space-y-6">
+      <div class="card p-6 space-y-5">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-teal-700 bg-teal-50 px-2.5 py-1 rounded">Game Edukatif Klinis</span>
+          <h2 class="text-xl font-bold text-slate-900 mt-2">Simulasi Pengambilan Keputusan &amp; Regulasi Diri Saat OSCE</h2>
+          <p class="text-sm text-slate-600">Pilih respons yang paling mencerminkan efikasi diri adaptif pada tiap skenario klinis.</p>
+        </div>
+        <div id="clinicalGameContainer" class="space-y-4"></div>
+        <div class="p-4 bg-teal-50 border border-teal-200 rounded-xl flex items-center justify-between">
+          <div class="text-sm font-semibold text-teal-950">Skor Simulasi Klinis: <span id="clinicalScoreDisplay">0 / 3</span></div>
+          <button onclick="evaluateClinicalGame()" class="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white text-sm font-semibold rounded-lg">Cek Umpan Balik Simulasi</button>
+        </div>
+      </div>
+
+      <div class="card p-6 space-y-4">
+        <h3 class="text-lg font-bold text-slate-900">Asesmen Berpikir Kritis Kasus Akademik-Klinis</h3>
+        <p class="text-sm text-slate-600">
+          <strong>Kasus:</strong> Seorang mahasiswa kedokteran semester 5 gagal pada stasiun anamnesis kardiovaskular karena panik saat waktu tersisa 2 menit, lalu menghindari latihan kelompok berikutnya. Berdasarkan kerangka Bandura, analisis penyebab penurunan efikasi dirinya dan rancang 3 langkah intervensi berbasis bukti!
+        </p>
+        <textarea id="criticalThinkingInput" rows="4" placeholder="Tuliskan analisis berpikir kritis Anda di sini..." class="w-full p-3.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
+        <button onclick="saveCriticalThinking()" class="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-lg text-sm">Simpan Jawaban Berpikir Kritis</button>
+      </div>
+    </section>
+
+    <!-- TAB 6: EVALUASI ASSURE & REFLEKSI -->
+    <section id="tab-evaluasi" class="tab-panel hidden space-y-6">
+      <div class="card p-6 space-y-4">
+        <h2 class="text-xl font-bold text-slate-900">Kuesioner Evaluasi Program (Model ASSURE)</h2>
+        <p class="text-sm text-slate-600">Berikan penilaian 1 (Sangat Kurang) hingga 5 (Sangat Baik) terhadap pelaksanaan program.</p>
+        <div id="assureContainer" class="space-y-3"></div>
+      </div>
+
+      <div class="card p-6 space-y-4">
+        <h3 class="text-lg font-bold text-slate-900">Logbook Refleksi Diri Peserta</h3>
+        <textarea id="reflectionInput" rows="4" placeholder="Tuliskan perubahan pola pikir, strategi belajar, dan komitmen penguatan efikasi diri Anda setelah mengikuti program..." class="w-full p-3.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
+        <button onclick="submitEvaluation()" class="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-lg text-sm">
+          Simpan &amp; Kirim Evaluasi ke Google Sheet
+        </button>
+      </div>
+    </section>
+
+    <!-- TAB 7: REKAP & KIRIM DATA -->
+    <section id="tab-rekap" class="tab-panel hidden space-y-6">
+      <div class="card p-6 space-y-5">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900">Ringkasan Rekapitulasi &amp; Sinkronisasi Penelitian</h2>
+            <p class="text-sm text-slate-600">Pastikan seluruh data sudah dikirim ke Google Sheet fasilitator/peneliti.</p>
+          </div>
+          <span id="syncStatusBadge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+            Terhubung ke Google Apps Script
+          </span>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <div class="text-xs text-slate-500">GSES Pre / Post</div>
+            <div class="text-lg font-extrabold text-slate-900 mt-1"><span id="recapGsesPre">-</span> / <span id="recapGsesPost">-</span></div>
+          </div>
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <div class="text-xs text-slate-500">Delta (&Delta;) GSES</div>
+            <div class="text-lg font-extrabold text-sky-700 mt-1" id="recapGsesDelta">-</div>
+          </div>
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <div class="text-xs text-slate-500">Pre / Post-Test</div>
+            <div class="text-lg font-extrabold text-slate-900 mt-1"><span id="recapPreScore">-</span> / <span id="recapPostScore">-</span></div>
+          </div>
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <div class="text-xs text-slate-500">Delta (&Delta;) Tes</div>
+            <div class="text-lg font-extrabold text-emerald-700 mt-1" id="recapTestDelta">-</div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+          <button onclick="sendToGoogleSheet('REKAP_LENGKAP')" class="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-lg text-sm transition">
+            Kirim Rekap Lengkap ke Google Sheet Sekarang
+          </button>
+          <button onclick="downloadSummaryTxt()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-semibold rounded-lg text-sm transition">
+            Unduh Cadangan Laporan (.txt)
+          </button>
+          <button onclick="copySummaryClipboard()" class="px-5 py-2.5 bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 font-semibold rounded-lg text-sm transition">
+            Salin Teks Ringkasan
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+    Program Penguatan Efikasi Diri Mahasiswa Kedokteran &bull; Panduan dr. Sri Maria Puji Lestari, M.Pd.Ked
+  </footer>
+
+  <script>
+    // URL Google Apps Script Web App terpasang otomatis
+    const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwiI66gFmGgCDqkZoNiBAz1DdyUMa3C6ln-RY24_MY5rr7bEo5NV89Sevhv0_ew97Nw/exec";
+    const STORAGE_KEY = "efikasi_fk_state_v1";
+
+    const gsesItems = [
+      "Saya selalu dapat memecahkan masalah yang sulit jika saya berusaha cukup keras.",
+      "Jika seseorang menentang saya, saya dapat menemukan cara dan jalan untuk mendapatkan apa yang saya inginkan.",
+      "Mudah bagi saya untuk tetap berpegang pada tujuan dan mencapai sasaran saya.",
+      "Saya yakin bahwa saya dapat menghadapi peristiwa yang tidak terduga secara efisien.",
+      "Berkat kecerdikan saya, saya tahu cara menangani situasi yang tidak terduga.",
+      "Saya dapat memecahkan sebagian besar masalah jika saya menginvestasikan usaha yang diperlukan.",
+      "Saya dapat tetap tenang saat menghadapi kesulitan karena saya dapat mengandalkan kemampuan koping saya.",
+      "Ketika dihadapkan pada suatu masalah, saya biasanya dapat menemukan beberapa solusi.",
+      "Jika saya berada dalam kesulitan, saya biasanya dapat memikirkan jalan keluarnya.",
+      "Apa pun yang terjadi pada saya, saya biasanya mampu menanganinya."
+    ];
+
+    const quizBank = [
+      { q: "Menurut Albert Bandura, efikasi diri (self-efficacy) paling tepat didefinisikan sebagai...", opts: ["Penilaian umum terhadap harga diri seseorang secara menyeluruh", "Keyakinan individu terhadap kemampuannya mengorganisasi dan melaksanakan tindakan untuk mencapai hasil tertentu", "Tingkat kecerdasan intelektual mahasiswa dalam ujian tulis", "Motivasi ekstrinsik yang berasal dari penghargaan dosen", "Kemampuan menghafal seluruh panduan klinis tanpa kesalahan"], ans: 1 },
+      { q: "Sumber efikasi diri yang paling kuat pengaruhnya menurut teori sosial kognitif Bandura adalah...", opts: ["Persuasi verbal dari teman sebaya", "Pengalaman penguasaan langsung (mastery experiences)", "Pengamatan terhadap video pembelajaran", "Kondisi relaksasi otot sebelum ujian", "Pujian tertulis pada transkrip nilai"], ans: 1 },
+      { q: "Mahasiswa yang mengamati kakak tingkat berhasil melakukan anamnesis terstruktur lalu merasa yakin dirinya juga mampu melakukannya memperoleh sumber efikasi diri berupa...", opts: ["Mastery experience", "Vicarious experience (pengalaman vikarius)", "Somatic arousal", "External reinforcement", "Cognitive dissonance"], ans: 1 },
+      { q: "Ketika seorang mahasiswa merasa jantung berdebar kencang sebelum OSCE dan menafsirkannya sebagai tanda bahwa ia pasti akan gagal, mekanisme yang berperan adalah...", opts: ["Interpretasi kondisi fisiologis dan emosional", "Pengalaman vikarius negatif", "Persuasi verbal institusional", "Penetapan target SMART", "Evaluasi sumatif blok"], ans: 0 },
+      { q: "Perbedaan mendasar antara efikasi diri (self-efficacy) dan konsep diri (self-concept) terletak pada...", opts: ["Efikasi diri bersifat spesifik terhadap tugas/konteks tertentu, sedangkan konsep diri lebih global", "Konsep diri hanya berlaku pada mahasiswa preklinik", "Efikasi diri tidak dapat berubah melalui pelatihan", "Konsep diri diukur menggunakan skala GSES", "Tidak ada perbedaan konseptual di antara keduanya"], ans: 0 },
+      { q: "Dalam pendidikan kedokteran, efikasi diri akademik yang tinggi terbukti berhubungan dengan...", opts: ["Penghindaran kasus klinis kompleks", "Ketekunan (perseverance) dan penggunaan strategi belajar regulasi diri", "Ketergantungan penuh pada bimbingan tutor", "Penurunan refleksi setelah umpan balik", "Kecemasan performa yang menetap"], ans: 1 },
+      { q: "Strategi paling efektif untuk membangun mastery experience pada mahasiswa yang kesulitan keterampilan prosedural adalah...", opts: ["Langsung menguji pada kasus emergensi tanpa latihan", "Memecah keterampilan menjadi subtugas bertahap dari sederhana ke kompleks", "Membandingkan nilainya dengan mahasiswa peringkat teratas", "Menunda latihan hingga mendekati ujian akhir", "Mengurangi frekuensi umpan balik formatif"], ans: 1 },
+      { q: "Umpan balik (feedback) dari dosen klinik yang paling mendukung penguatan efikasi diri adalah...", opts: ["Pernyataan umum seperti 'kamu kurang berbakat di klinik'", "Umpan balik spesifik pada perilaku yang dapat diperbaiki disertai langkah konkret", "Kritik di depan pasien tanpa diskusi lanjutan", "Pujian tanpa dasar pada kesalahan prosedur", "Penilaian angka tanpa penjelasan"], ans: 1 },
+      { q: "Model pembelajaran vikarius akan paling efektif meningkatkan efikasi diri mahasiswa apabila model yang diamati memiliki karakteristik...", opts: ["Kemiripan tingkat kompetensi/tahap belajar (coping model) yang berhasil mengatasi kesulitan", "Kesempurnaan tanpa pernah melakukan kesalahan sejak awal", "Perbedaan latar belakang yang sangat jauh", "Hanya menyampaikan teori tanpa demonstrasi", "Tidak memberikan penjelasan strategi berpikirnya"], ans: 0 },
+      { q: "Pada instrumen General Self-Efficacy Scale (GSES), rentang skor total dari 10 butir pernyataan (skala 1–4) adalah...", opts: ["0 – 10", "10 – 40", "10 – 50", "20 – 80", "1 – 100"], ans: 1 },
+      { q: "Tujuan utama pemisahan antara keikutsertaan program pembelajaran dan persetujuan penelitian adalah...", opts: ["Mempercepat pengisian kuesioner", "Menjamin prinsip otonomi dan etika penelitian tanpa paksaan akademik", "Mengurangi jumlah peserta yang mengikuti sesi", "Menghindari pencatatan NIM mahasiswa", "Menyederhanakan analisis statistik"], ans: 1 },
+      { q: "Dalam kerangka Self-Regulated Learning (SRL) Zimmerman, efikasi diri berperan kuat pada fase...", opts: ["Hanya pada fase evaluasi akhir semester", "Forethought (perencanaan), performance (pelaksanaan), dan self-reflection", "Hanya saat menerima nilai ujian", "Fase administratif pendaftaran blok", "Tidak berhubungan dengan regulasi diri"], ans: 1 },
+      { q: "Mahasiswa dengan efikasi diri rendah cenderung memandang tugas klinis yang menantang sebagai...", opts: ["Peluang untuk mengasah kompetensi", "Ancaman yang harus dihindari sehingga memicu stres", "Proses belajar bertahap yang wajar", "Sarana kolaborasi dengan sejawat", "Tantangan yang meningkatkan fokus"], ans: 1 },
+      { q: "Teknik reappraisal kognitif terhadap gejala fisiologis (misalnya tangan berkeringat sebelum ujian keterampilan) bertujuan untuk...", opts: ["Menyangkal rasa cemas sepenuhnya", "Memaknai ulang aktivasi fisiologis sebagai kesiapan energi tubuh menghadapi tantangan", "Menghindari situasi ujian", "Menggantikan latihan keterampilan klinis", "Menurunkan standar capaian pembelajaran"], ans: 1 },
+      { q: "Penetapan tujuan (goal setting) yang paling meningkatkan efikasi diri dalam 10 hari program adalah...", opts: ["Target jangka panjang yang abstrak tanpa indikator", "Target proksimal (jangka pendek), spesifik, dan terukur (SMART)", "Target yang ditetapkan sepenuhnya oleh orang lain tanpa komitmen pribadi", "Target yang mustahil dicapai dalam waktu singkat", "Tidak menetapkan target agar bebas tekanan"], ans: 1 },
+      { q: "Dalam diskusi tutorial PBL, mahasiswa yang berani mengajukan hipotesis diagnosis meskipun belum sepenuhnya yakin menunjukkan...", opts: ["Overconfidence yang berbahaya", "Efikasi diri akademik yang sehat untuk berpartisipasi aktif dan belajar dari diskusi", "Kurangnya persiapan belajar mandiri", "Ketidakpatuhan terhadap aturan tutor", "Penghindaran tanggung jawab kelompok"], ans: 1 },
+      { q: "Peran refleksi terstruktur (logbook) setelah sesi simulasi klinis adalah...", opts: ["Sekadar memenuhi syarat administrasi kehadiran", "Membantu mahasiswa mengatribusikan keberhasilan pada strategi dan usaha yang dapat dikendalikan", "Mencari kesalahan rekan satu kelompok", "Menghafal daftar tilik tanpa pemahaman", "Menggantikan peran instruktur klinik"], ans: 1 },
+      { q: "Atribusi kegagalan yang paling adaptif untuk menjaga efikasi diri setelah nilai ujian kurang memuaskan adalah...", opts: ["'Saya memang tidak punya bakat menjadi dokter'", "'Strategi belajar dan manajemen waktu saya perlu diperbaiki untuk ujian berikutnya'", "'Soal ujian sengaja dibuat untuk menjatuhkan mahasiswa'", "'Tidak ada gunanya belajar lebih giat'", "'Keberhasilan hanya bergantung pada keberuntungan'"], ans: 1 },
+      { q: "Dalam model perancangan pembelajaran ASSURE, huruf 'R' pertama (Require learner participation) menekankan...", opts: ["Ceramah satu arah selama seluruh sesi", "Keterlibatan aktif mahasiswa melalui latihan, simulasi, dan lembar kerja", "Evaluasi akhir tanpa umpan balik", "Penggunaan media tanpa interaksi", "Pembatasan diskusi kelompok"], ans: 1 },
+      { q: "Mengapa pencatatan NIM yang konsisten pada Pre-Test dan Post-Test sangat penting dalam evaluasi program?", opts: ["Untuk mengumumkan peringkat mahasiswa secara terbuka", "Untuk melakukan analisis berpasangan (paired comparison) perubahan skor tiap individu", "Untuk mengganti sistem presensi fakultas", "Untuk menentukan kelulusan blok secara langsung", "Agar data tidak perlu dianonimkan"], ans: 1 },
+      { q: "Contoh persuasi verbal yang kurang efektif bahkan dapat menurunkan efikasi diri mahasiswa adalah...", opts: ["'Langkah anamnesismu sudah runtut, mari pertajam bagian riwayat penyakit dahulu'", "'Kamu pasti bisa kalau mau berusaha' tanpa panduan strategi saat mahasiswa sedang kewalahan", "'Coba gunakan kerangka SOCRATES untuk menggali nyeri pasien'", "'Kemajuanmu minggu ini terlihat dari ketepatan pemeriksaan fisik'", "'Mari kita evaluasi bagian mana yang paling menantang bagimu'"], ans: 1 },
+      { q: "Hubungan antara efikasi diri dan kinerja klinis bersifat...", opts: ["Satu arah saja dari nilai ke efikasi diri", "Resiprokal (saling memengaruhi antara keyakinan, tindakan, dan hasil)", "Acak dan tidak dapat diprediksi", "Hanya terjadi pada mahasiswa tahun akhir", "Berbanding terbalik pada semua kondisi"], ans: 1 },
+      { q: "Saat menghadapi pasien simulasi dengan keluhan kompleks, langkah regulasi diri yang mencerminkan efikasi diri tinggi adalah...", opts: ["Panik dan menghentikan wawancara lebih awal", "Menggunakan struktur sistematis yang telah dilatih dan tetap tenang mengelola informasi", "Menyerahkan seluruh wawancara kepada rekan", "Mengabaikan keluhan utama pasien", "Langsung meminta bantuan penguji"], ans: 1 },
+      { q: "Manakah indikator peningkatan efikasi diri setelah mengikuti 6 sesi program?", opts: ["Meningkatnya skor GSES dan kesiapan menghadapi tantangan akademik/klinis", "Berkurangnya waktu belajar mandiri", "Menghindari umpan balik dosen", "Meningkatnya kecemasan saat diskusi", "Menurunnya partisipasi dalam kerja kelompok"], ans: 0 },
+      { q: "Dalam pembelajaran berbasis tim (peer-assisted learning), manfaat utama bagi mahasiswa dengan efikasi diri rendah adalah...", opts: ["Dapat menyalin jawaban teman tanpa berpikir", "Melihat bahwa kesulitan juga dialami sejawat dan dapat diatasi dengan strategi tepat", "Terhindar dari penilaian dosen", "Mengurangi beban materi ujian", "Tidak perlu melakukan refleksi pribadi"], ans: 1 },
+      { q: "Latihan pernapasan diafragma singkat sebelum memasuki ruang OSCE berfungsi langsung memodulasi sumber efikasi diri berupa...", opts: ["Pengalaman vikarius", "Keadaan fisiologis dan emosional (physiological & affective states)", "Persuasi verbal", "Evaluasi sumatif", "Mastery eksternal"], ans: 1 },
+      { q: "Efikasi diri kolektif (collective efficacy) dalam kelompok belajar mahasiswa kedokteran berarti...", opts: ["Keyakinan bersama kelompok bahwa mereka mampu bekerja sama menyelesaikan tugas/kasus kompleks", "Ketergantungan seluruh anggota pada satu ketua kelompok", "Persaingan tidak sehat antaranggota kelompok", "Penyeragaman gaya belajar semua individu", "Pengurangan tanggung jawab individu"], ans: 0 },
+      { q: "Jika skor GSES Pre-Test seorang mahasiswa adalah 24 dan Post-Test menjadi 33, maka selisih perubahan (Delta GSES) adalah...", opts: ["+7", "+9", "-9", "+11", "+19"], ans: 1 },
+      { q: "Ketika mahasiswa mengalami kegagalan sementara (setback) selama latihan, pendekatan yang paling menjaga efikasi diri adalah...", opts: ["Menghentikan latihan agar tidak kecewa lagi", "Menganalisis bagian spesifik yang keliru dan mengulang latihan pada bagian tersebut", "Menyalahkan instrumen penilaian", "Membandingkan diri secara negatif dengan orang lain", "Menghindari diskusi dengan mentor"], ans: 1 },
+      { q: "Aspek penting dalam Lembar Kerja perencanaan belajar mandiri adalah...", opts: ["Menulis daftar keinginan tanpa jadwal", "Menentukan target spesifik, strategi, sumber daya, indikator keberhasilan, dan jadwal evaluasi", "Menyalin jadwal kuliah tanpa modifikasi", "Hanya mencatat kendala tanpa solusi", "Menunggu instruksi harian dari fasilitator"], ans: 1 },
+      { q: "Mengapa pengalaman keberhasilan yang terlalu mudah tanpa tantangan kurang efektif membangun efikasi diri yang tangguh?", opts: ["Karena membuat mahasiswa cepat bosan", "Karena efikasi diri yang resilien terbentuk saat individu berhasil mengatasi hambatan melalui usaha", "Karena tidak memerlukan umpan balik", "Karena bertentangan dengan kurikulum", "Karena menurunkan nilai ujian"], ans: 1 },
+      { q: "Dalam konteks klinis, bahaya dari keyakinan berlebihan tanpa kompetensi (uncalibrated overconfidence) adalah...", opts: ["Meningkatnya keselamatan pasien", "Risiko kesalahan pengambilan keputusan klinis akibat mengabaikan keterbatasan diri", "Meningkatnya pencarian umpan balik", "Ketelitian dalam pemeriksaan fisik", "Kepatuhan terhadap protokol klinis"], ans: 1 },
+      { q: "Oleh karena itu, penguatan efikasi diri yang ideal dalam pendidikan kedokteran harus selalu disertai dengan...", opts: ["Kalibrasi diri (self-calibration) dan refleksi berbasis bukti kinerja", "Penghapusan ujian keterampilan", "Pengurangan standar kompetensi klinis", "Pujian tanpa evaluasi objektif", "Pembatasan latihan mandiri"], ans: 0 },
+      { q: "Pada tahap Evaluasi ASSURE (Evaluate and revise), fokus utama evaluasi program adalah...", opts: ["Hanya menilai kepuasan konsumsi peserta", "Menilai pencapaian capaian pembelajaran peserta serta efektivitas metode dan media program", "Menghukum peserta yang skornya rendah", "Mengganti seluruh materi tanpa data", "Menilai kehadiran fasilitator saja"], ans: 1 },
+      { q: "Strategi mental rehearsal (visualisasi terstruktur sebelum tindakan klinis) membantu meningkatkan efikasi diri dengan cara...", opts: ["Menggantikan kebutuhan latihan fisik sepenuhnya", "Melatih urutan langkah kognitif dan membangun kesiapan mental sebelum praktik nyata", "Menghilangkan kebutuhan supervisi dosen", "Mengurangi waktu belajar teori", "Menghindari kesalahan secara mutlak"], ans: 1 },
+      { q: "Mahasiswa yang aktif meminta umpan balik spesifik setelah simulasi menunjukkan...", opts: ["Kelemahan kompetensi", "Orientasi penguasaan (mastery orientation) dan efikasi diri yang konstruktif", "Ketidakmampuan belajar mandiri", "Ketergantungan emosional", "Kurangnya persiapan"], ans: 1 },
+      { q: "Faktor lingkungan belajar yang paling kondusif bagi tumbuhnya efikasi diri mahasiswa kedokteran adalah...", opts: ["Lingkungan yang aman secara psikologis (psychologically safe) untuk bertanya dan belajar dari kesalahan", "Lingkungan kompetitif ekstrem yang mempermalukan kesalahan", "Lingkungan tanpa standar kompetensi yang jelas", "Lingkungan tanpa umpan balik", "Lingkungan yang membatasi kolaborasi"], ans: 0 },
+      { q: "Dalam program 10 hari, fungsi utama pengisian logbook harian/berkala adalah...", opts: ["Memantau progres penguasaan diri secara bertahap dan memperkuat kesadaran akan kemajuan", "Menambah beban tugas administratif", "Menggantikan ujian tulis akhir", "Membatasi kreativitas belajar", "Menilai kecepatan mengetik"], ans: 0 },
+      { q: "Apabila mahasiswa menghadapi materi blok yang sangat padat, penerapan prinsip chunking (pemecahan materi) berdampak pada efikasi diri melalui...", opts: ["Menciptakan pengalaman keberhasilan kecil yang beruntun (incremental mastery)", "Mengurangi kedalaman materi ilmiah", "Menghilangkan kebutuhan evaluasi diri", "Menggantikan diskusi kelompok", "Menunda waktu belajar"], ans: 0 },
+      { q: "Keberlanjutan efikasi diri setelah program 10 hari berakhir paling ditentukan oleh...", opts: ["Kebiasaan mahasiswa menerapkan siklus penetapan target, latihan terarah, dan refleksi mandiri", "Pengawasan ketat fasilitator setiap hari selamanya", "Mengulang pengisian kuesioner setiap minggu tanpa tindakan", "Menghindari tantangan akademik baru", "Mengandalkan motivasi sesaat"], ans: 0 }
+    ];
+
+    const sessionList = [
+      { id: "lk1", title: "Sesi 1 (Hari 1–2): Pemetaan Efikasi Diri & Identifikasi Hambatan", prompt: "Tuliskan 2 situasi akademik/klinis yang paling menantang bagi Anda saat ini beserta respons pikiran dan emosi yang muncul." },
+      { id: "lk2", title: "Sesi 2 (Hari 3–4): Merancang Mastery Experiences Berbasis Target SMART", prompt: "Susun 1 target belajar/keterampilan klinis dalam 7 hari ke depan dengan kriteria Spesifik, Terukur, Dapat Dicapai, Relevan, dan Berbatas Waktu." },
+      { id: "lk3", title: "Sesi 3 (Hari 5): Pembelajaran Vikarius (Vicarious Learning) & Modeling", prompt: "Identifikasi 1 model sejawat/klinisi dan strategi spesifik yang Anda pelajari dari cara mereka menyelesaikan masalah klinis." },
+      { id: "lk4", title: "Sesi 4 (Hari 6–7): Mengelola Persuasi Verbal & Umpan Balik Konstruktif", prompt: "Catat 1 umpan balik penting yang pernah Anda terima dan ubah menjadi rencana perbaikan langkah demi langkah." },
+      { id: "lk5", title: "Sesi 5 (Hari 8–9): Regulasi Fisiologis, Emosional, & Mental Rehearsal", prompt: "Tuliskan teknik regulasi diri (misal pernapasan, reappraisal kognitif, visualisasi) yang Anda praktikkan sebelum simulasi/ujian." },
+      { id: "lk6", title: "Sesi 6 (Hari 10): Integrasi, Kalibrasi Diri, & Rencana Tindak Lanjut", prompt: "Rumuskan komitmen tindak lanjut 1 bulan ke depan untuk mempertahankan penguatan efikasi diri Anda." }
+    ];
+
+    const clinicalScenarios = [
+      {
+        q: "Skenario 1: Saat latihan OSCE, Anda lupa urutan pemeriksaan fisik toraks dan waktu tersisa 3 menit. Apa langkah paling adaptif?",
+        opts: [
+          "Berhenti dan meminta penguji mengulang dari awal karena sudah terlanjur salah.",
+          "Tarik napas 1 kali, lanjutkan pemeriksaan sistematik yang tersisa dengan tenang, lalu catat poin yang terlewat untuk latihan berikutnya.",
+          "Mempercepat gerakan tanpa menjelaskan kepada pasien simulasi."
+        ],
+        ans: 1
+      },
+      {
+        q: "Skenario 2: Dosen pembimbing memberikan koreksi tajam terkait teknik komunikasi empati Anda saat anamnesis.",
+        opts: [
+          "Menganggap diri tidak berbakat di bidang klinis dan menghindari giliran maju berikutnya.",
+          "Menanyakan poin spesifik yang perlu diperbaiki dan mempraktikkannya ulang pada simulasi berikutnya.",
+          "Menyalahkan pasien simulasi yang dianggap kurang kooperatif."
+        ],
+        ans: 1
+      },
+      {
+        q: "Skenario 3: Menjelang ujian blok dengan materi padat, Anda merasa kewalahan dan sulit memulai belajar.",
+        opts: [
+          "Membagi topik menjadi blok 45 menit dengan target subtopik terukur dan mengevaluasi pemahaman tiap selesai 1 blok.",
+          "Membaca semua buku teks sekaligus semalam suntuk tanpa jeda.",
+          "Menunda belajar sampai merasa benar-benar siap secara emosional."
+        ],
+        ans: 0
+      }
+    ];
+
+    const assureItems = [
+      "Kesesuaian materi program dengan kebutuhan mahasiswa kedokteran (Analyze learners)",
+      "Kejelasan capaian pembelajaran dan target tiap sesi (State objectives)",
+      "Kualitas metode, lembar kerja, dan media pembelajaran interaktif (Select methods & media)",
+      "Kemudahan penggunaan platform digital dalam mendukung belajar mandiri (Utilize media)",
+      "Keterlibatan aktif peserta dalam simulasi, refleksi, dan evaluasi diri (Require participation)",
+      "Manfaat keseluruhan program terhadap peningkatan keyakinan diri akademik & klinis (Evaluate & revise)"
+    ];
+
+    let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    state.profile = state.profile || { nama: "", nim: "", angkatan: "", tahap: "Awal (Pre-Program / Hari 1)", consent: false };
+    state.gsesPre = state.gsesPre ?? null;
+    state.gsesPost = state.gsesPost ?? null;
+    state.preTestScore = state.preTestScore ?? null;
+    state.preTestCorrect = state.preTestCorrect ?? null;
+    state.postTestScore = state.postTestScore ?? null;
+    state.postTestCorrect = state.postTestCorrect ?? null;
+    state.worksheets = state.worksheets || {};
+    state.criticalThinking = state.criticalThinking || "";
+    state.reflection = state.reflection || "";
+    state.assure = state.assure || {};
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      updateRecapUI();
+    }
+
+    function showToast(msg, isError = false) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.className = `fixed bottom-5 right-5 z-50 max-w-sm text-sm px-4 py-3 rounded-xl shadow-lg border ${isError ? "bg-rose-900 text-white border-rose-700" : "bg-slate-900 text-white border-slate-700"}`;
+      t.classList.remove("hidden");
+      setTimeout(() => t.classList.add("hidden"), 4200);
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll(".tab-panel").forEach(p => p.classList.add("hidden"));
+      document.getElementById("tab-" + tabName).classList.remove("hidden");
+      document.querySelectorAll(".tab-btn").forEach(b => {
+        b.classList.toggle("active", b.dataset.tab === tabName);
+      });
+    }
+
+    function renderGses() {
+      const container = document.getElementById("gsesContainer");
+      container.innerHTML = gsesItems.map((item, idx) => `
+        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70 flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <p class="text-sm font-medium text-slate-800"><span class="font-bold text-sky-700 mr-1">${idx + 1}.</span> ${item}</p>
+          <div class="flex items-center gap-2 shrink-0">
+            ${[1, 2, 3, 4].map(val => `
+              <label class="cursor-pointer flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-semibold hover:border-sky-500">
+                <input type="radio" name="gses_${idx}" value="${val}" class="text-sky-600" />
+                <span>${val}</span>
+              </label>
+            `).join("")}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderQuiz() {
+      const container = document.getElementById("quizContainer");
+      const letters = ["A", "B", "C", "D", "E"];
+      container.innerHTML = quizBank.map((item, idx) => `
+        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2.5">
+          <p class="text-sm font-semibold text-slate-900"><span class="text-sky-700 font-bold mr-1">${idx + 1}.</span> ${item.q}</p>
+          <div class="space-y-1.5 pl-1">
+            ${item.opts.map((opt, oIdx) => `
+              <label class="flex items-start gap-2.5 p-2 rounded-lg hover:bg-white cursor-pointer text-sm text-slate-700">
+                <input type="radio" name="quiz_${idx}" value="${oIdx}" class="mt-1 text-emerald-600" />
+                <span><strong class="text-slate-900 mr-1">${letters[oIdx]}.</strong> ${opt}</span>
+              </label>
+            `).join("")}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderSessions() {
+      const container = document.getElementById("sessionsContainer");
+      container.innerHTML = sessionList.map(s => `
+        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70 space-y-2">
+          <h3 class="font-bold text-slate-900 text-sm">${s.title}</h3>
+          <p class="text-xs text-slate-600">${s.prompt}</p>
+          <textarea id="${s.id}" rows="3" placeholder="Tuliskan jawaban lembar kerja..." class="w-full p-3 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">${state.worksheets[s.id] || ""}</textarea>
+        </div>
+      `).join("");
+    }
+
+    function renderClinicalGame() {
+      const container = document.getElementById("clinicalGameContainer");
+      container.innerHTML = clinicalScenarios.map((sc, idx) => `
+        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70 space-y-2">
+          <p class="text-sm font-semibold text-slate-900">${sc.q}</p>
+          <div class="space-y-1.5">
+            ${sc.opts.map((opt, oIdx) => `
+              <label class="flex items-start gap-2.5 p-2 rounded-lg hover:bg-white cursor-pointer text-sm text-slate-700">
+                <input type="radio" name="clin_${idx}" value="${oIdx}" class="mt-1 text-teal-600" />
+                <span>${opt}</span>
+              </label>
+            `).join("")}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderAssure() {
+      const container = document.getElementById("assureContainer");
+      container.innerHTML = assureItems.map((item, idx) => `
+        <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/70 flex flex-col md:flex-row md:items-center justify-between gap-2">
+          <span class="text-sm text-slate-800 font-medium">${idx + 1}. ${item}</span>
+          <div class="flex gap-1.5 shrink-0">
+            ${[1, 2, 3, 4, 5].map(v => `
+              <label class="cursor-pointer px-2.5 py-1 rounded border border-slate-300 bg-white text-xs font-semibold">
+                <input type="radio" name="assure_${idx}" value="${v}" ${state.assure[idx] == v ? "checked" : ""} /> ${v}
+              </label>
+            `).join("")}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function saveProfile() {
+      const nama = document.getElementById("inputNama").value.trim();
+      const nim = document.getElementById("inputNim").value.trim();
+      const angkatan = document.getElementById("inputAngkatan").value.trim();
+      const tahap = document.getElementById("inputTahap").value;
+      const consent = document.getElementById("inputConsent").checked;
+
+      if (!nama || !nim) {
+        showToast("Mohon isi Nama/Inisial dan NIM terlebih dahulu.", true);
+        return;
+      }
+      state.profile = { nama, nim, angkatan, tahap, consent };
+      saveState();
+      showToast("Identitas peserta berhasil disimpan.");
+      sendToGoogleSheet("PROFIL_PESERTA");
+    }
+
+    function submitGses() {
+      let total = 0;
+      for (let i = 0; i < gsesItems.length; i++) {
+        const checked = document.querySelector(`input[name="gses_${i}"]:checked`);
+        if (!checked) {
+          showToast(`Butir GSES nomor ${i + 1} belum diisi.`, true);
+          return;
+        }
+        total += parseInt(checked.value, 10);
+      }
+      const mode = document.getElementById("gsesMode").value;
+      if (mode === "pre") state.gsesPre = total;
+      else state.gsesPost = total;
+      saveState();
+      showToast(`Skor GSES (${mode.toUpperCase()}) = ${total} tersimpan & dikirim!`);
+      sendToGoogleSheet(mode === "pre" ? "GSES_PRE" : "GSES_POST");
+    }
+
+    function submitQuiz() {
+      let correct = 0;
+      let answered = 0;
+      for (let i = 0; i < quizBank.length; i++) {
+        const checked = document.querySelector(`input[name="quiz_${i}"]:checked`);
+        if (checked) {
+          answered++;
+          if (parseInt(checked.value, 10) === quizBank[i].ans) correct++;
+        }
+      }
+      if (answered < quizBank.length) {
+        showToast(`Masih ada ${quizBank.length - answered} soal yang belum dijawab.`, true);
+        return;
+      }
+      const score = Number((correct * 2.5).toFixed(1));
+      const mode = document.getElementById("testMode").value;
+      if (mode === "pre") {
+        state.preTestScore = score;
+        state.preTestCorrect = correct;
+      } else {
+        state.postTestScore = score;
+        state.postTestCorrect = correct;
+      }
+      saveState();
+      showToast(`Hasil ${mode.toUpperCase()}-Test: Skor ${score} (${correct}/40 benar) terkirim!`);
+      sendToGoogleSheet(mode === "pre" ? "PRE_TEST" : "POST_TEST");
+    }
+
+    function saveWorksheets() {
+      sessionList.forEach(s => {
+        state.worksheets[s.id] = document.getElementById(s.id).value.trim();
+      });
+      saveState();
+      showToast("Lembar Kerja LK 1–6 berhasil disimpan.");
+    }
+
+    function evaluateClinicalGame() {
+      let score = 0;
+      clinicalScenarios.forEach((sc, idx) => {
+        const checked = document.querySelector(`input[name="clin_${idx}"]:checked`);
+        if (checked && parseInt(checked.value, 10) === sc.ans) score++;
+      });
+      document.getElementById("clinicalScoreDisplay").textContent = `${score} / ${clinicalScenarios.length}`;
+      showToast(`Skor Simulasi Klinis Anda: ${score} dari ${clinicalScenarios.length}.`);
+    }
+
+    function saveCriticalThinking() {
+      state.criticalThinking = document.getElementById("criticalThinkingInput").value.trim();
+      saveState();
+      showToast("Jawaban asesmen berpikir kritis disimpan.");
+    }
+
+    function submitEvaluation() {
+      assureItems.forEach((_, idx) => {
+        const checked = document.querySelector(`input[name="assure_${idx}"]:checked`);
+        if (checked) state.assure[idx] = checked.value;
+      });
+      state.reflection = document.getElementById("reflectionInput").value.trim();
+      saveState();
+      showToast("Evaluasi ASSURE & Logbook Refleksi dikirim!");
+      sendToGoogleSheet("EVALUASI_REFLEKSI");
+    }
+
+    function computeDeltas() {
+      const deltaGses = (state.gsesPre !== null && state.gsesPost !== null) ? (state.gsesPost - state.gsesPre) : "";
+      const deltaTest = (state.preTestScore !== null && state.postTestScore !== null) ? Number((state.postTestScore - state.preTestScore).toFixed(1)) : "";
+      return { deltaGses, deltaTest };
+    }
+
+    function updateRecapUI() {
+      const { deltaGses, deltaTest } = computeDeltas();
+      document.getElementById("headerUserBadge").textContent = state.profile.nama ? `${state.profile.nama} (${state.profile.nim})` : "Belum diisi";
+
+      document.getElementById("displayGsesPre").textContent = state.gsesPre ?? "-";
+      document.getElementById("displayGsesPost").textContent = state.gsesPost ?? "-";
+      document.getElementById("displayGsesDelta").textContent = deltaGses !== "" ? (deltaGses >= 0 ? `+${deltaGses}` : deltaGses) : "-";
+
+      document.getElementById("displayPreScore").textContent = state.preTestScore !== null ? `${state.preTestScore} (${state.preTestCorrect}/40)` : "-";
+      document.getElementById("displayPostScore").textContent = state.postTestScore !== null ? `${state.postTestScore} (${state.postTestCorrect}/40)` : "-";
+      document.getElementById("displayTestDelta").textContent = deltaTest !== "" ? (deltaTest >= 0 ? `+${deltaTest}` : deltaTest) : "-";
+
+      document.getElementById("recapGsesPre").textContent = state.gsesPre ?? "-";
+      document.getElementById("recapGsesPost").textContent = state.gsesPost ?? "-";
+      document.getElementById("recapGsesDelta").textContent = deltaGses !== "" ? (deltaGses >= 0 ? `+${deltaGses}` : deltaGses) : "-";
+      document.getElementById("recapPreScore").textContent = state.preTestScore ?? "-";
+      document.getElementById("recapPostScore").textContent = state.postTestScore ?? "-";
+      document.getElementById("recapTestDelta").textContent = deltaTest !== "" ? (deltaTest >= 0 ? `+${deltaTest}` : deltaTest) : "-";
+    }
+
+    async function sendToGoogleSheet(eventType) {
+      if (!state.profile.nama || !state.profile.nim) {
+        showToast("Isi Nama dan NIM pada Tab 1 agar data terekam di Google Sheet.", true);
+        return;
+      }
+      const { deltaGses, deltaTest } = computeDeltas();
+      const payload = {
+        timestamp: new Date().toISOString(),
+        eventType,
+        nama: state.profile.nama,
+        nim: state.profile.nim,
+        angkatan: state.profile.angkatan,
+        tahap: state.profile.tahap,
+        consent: state.profile.consent ? "SETUJU" : "TIDAK_SETUJU",
+        gsesPre: state.gsesPre ?? "",
+        gsesPost: state.gsesPost ?? "",
+        deltaGses,
+        preTestScore: state.preTestScore ?? "",
+        preTestCorrect: state.preTestCorrect ?? "",
+        postTestScore: state.postTestScore ?? "",
+        postTestCorrect: state.postTestCorrect ?? "",
+        deltaTest
+      };
+
+      try {
+        await fetch(WEBHOOK_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        showToast(`Data (${eventType}) berhasil dikirim ke Google Sheet!`);
+      } catch (err) {
+        showToast("Gagal mengirim otomatis. Gunakan tombol Unduh Cadangan (.txt).", true);
+      }
+    }
+
+    function buildSummaryText() {
+      const { deltaGses, deltaTest } = computeDeltas();
+      return [
+        "=== REKAP PROGRAM PENGUATAN EFIKASI DIRI MAHASISWA KEDOKTERAN ===",
+        `Nama/Inisial : ${state.profile.nama || "-"}`,
+        `NIM          : ${state.profile.nim || "-"}`,
+        `Angkatan     : ${state.profile.angkatan || "-"}`,
+        `Tahap        : ${state.profile.tahap || "-"}`,
+        `Persetujuan  : ${state.profile.consent ? "SETUJU" : "TIDAK SETUJU"}`,
+        `GSES Pre     : ${state.gsesPre ?? "-"}`,
+        `GSES Post    : ${state.gsesPost ?? "-"}`,
+        `Delta GSES   : ${deltaGses !== "" ? deltaGses : "-"}`,
+        `Pre-Test     : ${state.preTestScore ?? "-"} (Benar: ${state.preTestCorrect ?? "-"}/40)`,
+        `Post-Test    : ${state.postTestScore ?? "-"} (Benar: ${state.postTestCorrect ?? "-"}/40)`,
+        `Delta Tes    : ${deltaTest !== "" ? deltaTest : "-"}`,
+        `Refleksi     : ${state.reflection || "-"}`
+      ].join("\n");
+    }
+
+    function downloadSummaryTxt() {
+      const blob = new Blob([buildSummaryText()], { type: "text/plain;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `Rekap_Efikasi_${state.profile.nim || "Peserta"}.txt`;
+      a.click();
+    }
+
+    function copySummaryClipboard() {
+      navigator.clipboard.writeText(buildSummaryText()).then(() => {
+        showToast("Ringkasan hasil disalin ke clipboard!");
+      });
+    }
+
+    // Init
+    window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("inputNama").value = state.profile.nama || "";
+      document.getElementById("inputNim").value = state.profile.nim || "";
+      document.getElementById("inputAngkatan").value = state.profile.angkatan || "";
+      document.getElementById("inputTahap").value = state.profile.tahap || "Awal (Pre-Program / Hari 1)";
+      document.getElementById("inputConsent").checked = !!state.profile.consent;
+      document.getElementById("criticalThinkingInput").value = state.criticalThinking || "";
+      document.getElementById("reflectionInput").value = state.reflection || "";
+
+      renderGses();
+      renderQuiz();
+      renderSessions();
+      renderClinicalGame();
+      renderAssure();
+      updateRecapUI();
+    });
+  </script>
+</body>
+</html>
